@@ -13,6 +13,9 @@ public class PlayerMove : MonoBehaviour
     Vector2 lastPos;
     Collider2D lastWallCol;
     int wallSize = 1;
+    public GameObject boomParticules;
+    bool canActivateBoost = true;
+    public string playerName;
 
     // Start is called before the first frame update
     void Start()
@@ -31,11 +34,20 @@ public class PlayerMove : MonoBehaviour
         SetLastWallSize(lastWallCol, lastPos, transform.position);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision != lastWallCol)
+        {
+            Instantiate(boomParticules, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
+    }
+
     // Fonctions custom
     private void HandleKeys()
     {   
         // Gestion des touches de direction
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetButtonDown(playerName+"UP"))
         {
             if(dir != Vector2.down)
             {
@@ -43,7 +55,7 @@ public class PlayerMove : MonoBehaviour
                 CreteWall();
             }
         } 
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetButtonDown(playerName+"DOWN"))
         {
             if(dir != Vector2.up)
             {
@@ -51,7 +63,7 @@ public class PlayerMove : MonoBehaviour
                 CreteWall();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetButtonDown(playerName+"LEFT"))
         {
             if (dir != Vector2.right)
             {
@@ -59,7 +71,7 @@ public class PlayerMove : MonoBehaviour
                 CreteWall();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetButtonDown(playerName+"RIGHT"))
         {
             if (dir != Vector2.left)
             {
@@ -67,8 +79,24 @@ public class PlayerMove : MonoBehaviour
                 CreteWall();
             }
         }
+        else if (Input.GetButtonDown(playerName+"BOOST"))
+        {
+            if (canActivateBoost == true)
+            {
+                StartCoroutine("ActivateBoost");
+            }
+        }
+
         // On applique le mouvement demandé
         rb.velocity = dir * speed;
+    }
+
+    IEnumerator ActivateBoost()
+    {
+        canActivateBoost = false;
+        speed += 5;
+        yield return new WaitForSeconds(3);
+        speed -= 5;
     }
     private void CreteWall()
     {

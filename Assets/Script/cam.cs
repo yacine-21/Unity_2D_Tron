@@ -5,10 +5,17 @@ using UnityEngine;
 public class cam : MonoBehaviour
 {
     public AudioClip DeathSfx;
+    public AudioClip music;
     bool shakingCam;
     public void playDeathSound()
     {
         GetComponent<AudioSource>().PlayOneShot(DeathSfx);
+        GetComponent<AudioSource>().Stop();
+    }
+
+    private void Start()
+    {
+        GetComponent<AudioSource>().PlayOneShot(music);
     }
 
     public void  Shake(float duration, float amount, float intensity)

@@ -19,9 +19,11 @@ public class PlayerMove : MonoBehaviour
     gameManager gm;
     [HideInInspector]
     public bool isAlive = true;
+    Vector2 initalPos;
 
     private void Awake()
     {
+        initalPos = transform.position;
         cam = Camera.main.GetComponent<cam>();
         gm = GameObject.Find("GameManager").GetComponent<gameManager>();
     }
@@ -52,7 +54,8 @@ public class PlayerMove : MonoBehaviour
             cam.playDeathSound();
             cam.Shake(0.7f, 0.4f,50.0f);
             Instantiate(Resources.Load("BoomParticuleSystem"), transform.position, Quaternion.identity);
-            Destroy(this.gameObject);
+            /*Destroy(this.gameObject);*/
+            gameObject.SetActive(false);
         }
     }
 
@@ -141,5 +144,12 @@ public class PlayerMove : MonoBehaviour
                 col.transform.localScale = new Vector2(1, size + 1);
             }
         }
+    }
+
+    public void ResetPlayer()
+    {
+        transform.position = initalPos;
+        isAlive = true;
+        dir = Vector2.up;
     }
 }

@@ -10,6 +10,7 @@ public class gameManager : MonoBehaviour
     public float gameSpeed = 1;
     public int[] scores;
     PlayerMove[] players;
+    public GameObject goTxt;
 
     private void Start()
     {
@@ -54,5 +55,38 @@ public class gameManager : MonoBehaviour
                 }
             }
         }
+
+        // Reset Game
+        StartCoroutine("ResetGame");
+    }
+
+    IEnumerator ResetGame()
+    {
+        yield return new WaitForSeconds(2);
+
+        goTxt.SetActive(true);
+        nbAlivePlayers = players.Length;
+        gameSpeed = 1;
+        Camera.main.GetComponent<cam>().GetComponent<AudioSource>().Play();
+
+
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("wall");
+        foreach(GameObject go in walls)
+        {
+            Destroy(go);
+        }
+
+        foreach (PlayerMove p in players)
+        {
+            p.gameObject.SetActive(true);
+            p.ResetPlayer();
+        }
+
+        Invoke("HideGoTxt", 2);
+    }
+
+    void HideGoTxt()
+    {
+        goTxt.SetActive(false);
     }
 }
